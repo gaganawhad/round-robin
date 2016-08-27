@@ -1,3 +1,5 @@
+require 'redis'
+
 module RoundRobin
   class Track
     attr_accessor :name, :list
@@ -8,19 +10,60 @@ module RoundRobin
     end
 
     def add element
-      list << element
+      persist { list << element }
     end
 
     def cycle
-      list.rotate!
+      persist { list.rotate! }
     end
 
     def next
-      list[0].tap { cycle }
+      persist do
+        cycle
+        list.last
+      end
+    end
+
+    def persist
+      yield.tap do
+        save
+      end
+    end
+
+    def save
+      RedisTrackStore.new(name, list).update_track
+    end
+
+    class RedisTrackStore
+      def initialize(name, list)
+        @name = name
+        @list = list
+        @redis = Redis.new(url: 'redis://localhost:6379')
+      end
+
+      def update_track
+        if @redis.exists @name
+          @list.each_with_index do |element, index|
+            @redis.lset @name, index, element
+          end
+        else
+          @list.each do |element|
+            @redis.lpush @name, element
+          end
+        end
+      end
     end
   end
 
   describe Track do
+    def redis
+      @redis ||= Redis.new(url: 'redis://localhost:6379')
+    end
+
+    before do
+      redis.flushall
+    end
+
     describe '#cycle' do
       it 'cycles through the list' do
         track = Track.new('customer-support', ['Andy', 'Sandy', 'George'])
