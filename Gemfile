@@ -8,6 +8,7 @@ ruby '2.3.1'
 gem 'redis'
 
 group :development do
+  gem 'byebug'
   gem 'guard-rspec', require: nil
   gem 'guard-rubocop'
 end
