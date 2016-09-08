@@ -33,23 +33,23 @@ module RoundRobin
     def save
       RedisTrackStore.new(name, list).update_track
     end
+  end
 
-    class RedisTrackStore
-      def initialize(name, list)
-        @name = name
-        @list = list
-        @redis = Redis.new(url: 'redis://localhost:6379')
-      end
+  class RedisTrackStore
+    def initialize(name, list)
+      @name = name
+      @list = list
+      @redis = Redis.new(url: 'redis://localhost:6379')
+    end
 
-      def update_track
-        if @redis.exists @name
-          @list.each_with_index do |element, index|
-            @redis.lset @name, index, element
-          end
-        else
-          @list.each do |element|
-            @redis.lpush @name, element
-          end
+    def update_track
+      if @redis.exists @name
+        @list.each_with_index do |element, index|
+          @redis.lset @name, index, element
+        end
+      else
+        @list.each do |element|
+          @redis.lpush @name, element
         end
       end
     end
