@@ -1,13 +1,13 @@
 require 'track'
 
 module RoundRobin
-  describe Track do
-    def redis
-      @redis ||= Redis.new(url: 'redis://localhost:6379')
-    end
+  def self.redis
+    @redis ||= Redis.new(url: 'redis://localhost:6379')
+  end
 
+  describe Track do
     before do
-      redis.flushall
+      RoundRobin.redis.flushall
     end
 
     describe '#cycle' do
