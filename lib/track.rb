@@ -36,6 +36,8 @@ module RoundRobin
   end
 
   class RedisTrackStore
+    attr_reader :name, :list, :redis
+
     def initialize(name, list)
       @name = name
       @list = list
@@ -43,8 +45,8 @@ module RoundRobin
     end
 
     def update_track
-      @redis.del @name if @redis.exists @name
-      @redis.rpush @name, @list
+      redis.del name if redis.exists name
+      redis.rpush name, list
     end
   end
 end
