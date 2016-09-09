@@ -43,15 +43,8 @@ module RoundRobin
     end
 
     def update_track
-      if @redis.exists @name
-        @list.each_with_index do |element, index|
-          @redis.lset @name, index, element
-        end
-      else
-        @list.each do |element|
-          @redis.lpush @name, element
-        end
-      end
+      @redis.del @name if @redis.exists @name
+      @redis.rpush @name, @list
     end
   end
 end

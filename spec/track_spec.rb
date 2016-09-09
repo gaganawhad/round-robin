@@ -34,4 +34,20 @@ module RoundRobin
       end
     end
   end
+
+  describe RedisTrackStore do
+    describe '#update_track' do
+      it 'adds the track if one does not exist' do
+        RedisTrackStore.new('new-array', ['foo', 'bar', 'baz']).update_track
+        expect(RoundRobin.redis.lrange('new-array', 0, -1)).to eq ['foo', 'bar', 'baz']
+      end
+
+      it 'updates existing track if one does not exists' do
+        RedisTrackStore.new('new-array', ['foo', 'bar', 'baz']).update_track
+        RedisTrackStore.new('new-array', ['a', 'b', 'c']).update_track
+
+        expect(RoundRobin.redis.lrange('new-array', 0, -1)).to eq ['a', 'b', 'c']
+      end
+    end
+  end
 end
