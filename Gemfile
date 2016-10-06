@@ -9,6 +9,7 @@ gem 'redis'
 
 group :development do
   gem 'byebug'
+  gem 'bundler-audit'
   gem 'guard-rspec', require: nil
   gem 'guard-rubocop'
 end

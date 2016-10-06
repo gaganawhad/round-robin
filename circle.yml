@@ -5,3 +5,5 @@ machine:
 test:
   post:
     - bundle exec rubocop
+    - bundle exec bundle-audit update
+    - bundle exec bundle-audit
