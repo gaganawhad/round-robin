@@ -1,15 +1,16 @@
 require 'redis'
 
 module RoundRobin
+  # A track to apply round robin algorithm to
   class Track
     attr_accessor :name, :list
 
-    def initialize(name, list=[])
+    def initialize(name, list = [])
       @name = name
       @list = list
     end
 
-    def add element
+    def add(element)
       persist { list << element }
     end
 
@@ -35,6 +36,7 @@ module RoundRobin
     end
   end
 
+  # Redis store wrapper for Track
   class RedisTrackStore
     attr_reader :name, :list, :redis
 
