@@ -1,3 +1,8 @@
 Metrics/LineLength:
   Max: 118
   AllowURI: true
+
+Style/BlockComments:
+  Description: 'Do not use block comments.'
+  StyleGuide: '#no-block-comments'
+  Enabled: false
